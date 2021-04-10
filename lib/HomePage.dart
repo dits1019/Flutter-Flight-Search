@@ -1,4 +1,5 @@
 import 'package:flight_search_ex/AppBar.dart';
+import 'package:flight_search_ex/ContentCard.dart';
 import 'package:flight_search_ex/RoundedButton.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,7 @@ class HomePage extends StatelessWidget {
             child: new Column(
               children: <Widget>[
                 _buildButtonRow(),
-                Container(),
+                Expanded(child: ContentCard()),
               ],
             ),
           ),
