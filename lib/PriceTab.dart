@@ -1,4 +1,6 @@
 import 'package:flight_search_ex/AnimatedDot.dart';
+import 'package:flight_search_ex/FlightStop.dart';
+import 'package:flight_search_ex/FlightStopCard.dart';
 import 'package:flutter/material.dart';
 
 class PriceTab extends StatefulWidget {
@@ -20,6 +22,10 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
   AnimationController _planeTravelController;
   Animation _planeTravelAnimation;
 
+  //항공편 카드 애니메이션
+  AnimationController _fabAnimationController;
+  Animation _fabAnimation;
+
   //점 애니메이션
   AnimationController _dotsAnimationController;
   //애니메이션이 담겨져있는 배열
@@ -29,6 +35,16 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
   final double _initialPlanePaddingBottom = 16.0;
   //비행기 아이콘의 최소 위쪽 패딩
   final double _minPlanePaddingTop = 16.0;
+
+  //항공편 카드의 내용이 들어간 배열
+  final List<FlightStop> _flightStops = [
+    FlightStop("JFK", "ORY", "JUN 05", "6h 25m", "\$851", "9:26 am - 3:43 pm"),
+    FlightStop("MRG", "FTB", "JUN 20", "6h 25m", "\$532", "9:26 am - 3:43 pm"),
+    FlightStop("ERT", "TVS", "JUN 20", "6h 25m", "\$718", "9:26 am - 3:43 pm"),
+    FlightStop("KKR", "RTY", "JUN 20", "6h 25m", "\$663", "9:26 am - 3:43 pm"),
+  ];
+
+  final List<GlobalKey<FlightStopCardState>> _stopKeys = [];
 
   //비행기 아이콘의 위쪽 패딩(애니메이션 후 아이콘이 위로 가기 때문에)
   double get _planeTopPadding =>
@@ -42,7 +58,7 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
   //비행기 크기
   double get _planeSize => _planeSizeAnimation.value;
 
-  final List<int> _flightStops = [1, 2, 3, 4];
+  // final List<int> _flightStops = [1, 2, 3, 4];
   final double _cardHeight = 80.0;
 
   //위젯이 생성될 때 처음으로 호출
@@ -69,10 +85,10 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
     return Container(
       width: double.infinity,
       child: Stack(
-        alignment: Alignment.center,
-        children: <Widget>[_buildPlane()]
-          ..addAll(_flightStops.map(_mapFlightStopToDot)),
-      ),
+          alignment: Alignment.center,
+          children: <Widget>[_buildPlane()]
+            ..addAll(_flightStops.map(_buildStopCard))
+            ..addAll(_flightStops.map(_mapFlightStopToDot))),
     );
   }
 
@@ -200,6 +216,33 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
   void _initDotAnimationController() {
     _dotsAnimationController = new AnimationController(
         vsync: this, duration: Duration(milliseconds: 500));
+  }
+
+  Widget _buildStopCard(FlightStop stop) {
+    int index = _flightStops.indexOf(stop);
+    double topMargin =
+        _dotPositions[index].value - 0.5 * (FlightStopCard.height - 24.0);
+    bool isLeft = index.isOdd;
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Padding(
+        padding: EdgeInsets.only(top: topMargin),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            isLeft ? Container() : Expanded(child: Container()),
+            Expanded(
+              child: FlightStopCard(
+                flightStop: stop,
+                isLeft: isLeft,
+              ),
+            ),
+            !isLeft ? Container() : Expanded(child: Container()),
+          ],
+        ),
+      ),
+    );
   }
 }
 
