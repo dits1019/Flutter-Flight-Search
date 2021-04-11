@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 //점 위젯
 class AnimatedDot extends AnimatedWidget {
   final Color color;
+  static final double size = 24.0;
 
   AnimatedDot({Key key, Animation<double> animation, @required this.color})
       : super(key: key, listenable: animation);
@@ -13,8 +14,8 @@ class AnimatedDot extends AnimatedWidget {
     return Positioned(
         top: animation.value,
         child: Container(
-          height: 24.0,
-          width: 24.0,
+          height: size,
+          width: size,
           decoration: BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,

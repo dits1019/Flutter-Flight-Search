@@ -36,7 +36,7 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
   //비행기 아이콘의 최소 위쪽 패딩
   final double _minPlanePaddingTop = 16.0;
 
-  //항공편 카드의 내용이 들어간 배열
+  //항공편 카드의 내용이 들어간 리스트
   final List<FlightStop> _flightStops = [
     FlightStop("JFK", "ORY", "JUN 05", "6h 25m", "\$851", "9:26 am - 3:43 pm"),
     FlightStop("MRG", "FTB", "JUN 20", "6h 25m", "\$532", "9:26 am - 3:43 pm"),
@@ -44,6 +44,7 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
     FlightStop("KKR", "RTY", "JUN 20", "6h 25m", "\$663", "9:26 am - 3:43 pm"),
   ];
 
+  //카드의 key들이 있는 리스트
   final List<GlobalKey<FlightStopCardState>> _stopKeys = [];
 
   //비행기 아이콘의 위쪽 패딩(애니메이션 후 아이콘이 위로 가기 때문에)
@@ -58,7 +59,6 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
   //비행기 크기
   double get _planeSize => _planeSizeAnimation.value;
 
-  // final List<int> _flightStops = [1, 2, 3, 4];
   final double _cardHeight = 80.0;
 
   //위젯이 생성될 때 처음으로 호출
@@ -69,6 +69,11 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
     _initPlaneTravelAnimations();
     _initDotAnimationController();
     _initDotAnimations();
+    _initFabAnimationController();
+    //foreach로 키 리스트에 키 추가
+    _flightStops
+        .forEach((stop) => _stopKeys.add(new GlobalKey<FlightStopCardState>()));
+    _planeSizeAnimationController.forward();
     _planeSizeAnimationController.forward();
   }
 
@@ -85,10 +90,12 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
     return Container(
       width: double.infinity,
       child: Stack(
-          alignment: Alignment.center,
-          children: <Widget>[_buildPlane()]
-            ..addAll(_flightStops.map(_buildStopCard))
-            ..addAll(_flightStops.map(_mapFlightStopToDot))),
+        alignment: Alignment.center,
+        children: <Widget>[_buildPlane()]
+          ..addAll(_flightStops.map(_buildStopCard))
+          ..addAll(_flightStops.map(_mapFlightStopToDot))
+          ..add(_buildFab()),
+      ),
     );
   }
 
@@ -101,6 +108,7 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
     );
   }
 
+  //애니메이션이 추가된 비행기 아이콘
   Widget _buildPlane() {
     return AnimatedBuilder(
       animation: _planeTravelAnimation,
@@ -162,6 +170,7 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
     );
   }
 
+  //점 설정
   Widget _mapFlightStopToDot(stop) {
     //list에서 stop을 찾고 그 자릿값을 index에 넣음
     int index = _flightStops.indexOf(stop);
@@ -213,15 +222,26 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
     }
   }
 
+  //점 애니메이션 컨트롤러
   void _initDotAnimationController() {
     _dotsAnimationController = new AnimationController(
-        vsync: this, duration: Duration(milliseconds: 500));
+        vsync: this, duration: Duration(milliseconds: 500))
+      ..addStatusListener((status) {
+        //항공편 카드 애니메이션이 끝난 후
+        if (status == AnimationStatus.completed) {
+          //체크 버튼 애니메이션 실행
+          _animateFlightStopCards().then((_) => _animateFab());
+        }
+      });
   }
 
+  //항공편 카드 생성
   Widget _buildStopCard(FlightStop stop) {
+    //자릿값
     int index = _flightStops.indexOf(stop);
-    double topMargin =
-        _dotPositions[index].value - 0.5 * (FlightStopCard.height - 24.0);
+    //위쪽 마진
+    double topMargin = _dotPositions[index].value -
+        0.5 * (FlightStopCard.height - AnimatedDot.size);
     bool isLeft = index.isOdd;
     return Align(
       alignment: Alignment.topCenter,
@@ -231,9 +251,12 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            //각 방향에 카드 생성
             isLeft ? Container() : Expanded(child: Container()),
             Expanded(
               child: FlightStopCard(
+                //key 추가
+                key: _stopKeys[index],
                 flightStop: stop,
                 isLeft: isLeft,
               ),
@@ -243,6 +266,44 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  //체크표시 버튼
+  Widget _buildFab() {
+    return Positioned(
+      bottom: 16.0,
+      child: ScaleTransition(
+        scale: _fabAnimation,
+        child: FloatingActionButton(
+          onPressed: () {},
+          child: Icon(Icons.check, size: 36.0),
+        ),
+      ),
+    );
+  }
+
+  //항공편 카드 애니메이션(Future로 비동기 처리)
+  Future _animateFlightStopCards() async {
+    //항공편 카드의 키 리스트(_stopKeys)에서 각각의 값을 가지고 애니메이션 수행
+    return Future.forEach(_stopKeys, (GlobalKey<FlightStopCardState> stopKey) {
+      //시간 간격을 두고 애니메이션 실행
+      return new Future.delayed(Duration(milliseconds: 250), () {
+        stopKey.currentState.runAnimation();
+      });
+    });
+  }
+
+  //체크 버튼 애니메이션 컨트롤러
+  void _initFabAnimationController() {
+    _fabAnimationController = new AnimationController(
+        vsync: this, duration: Duration(milliseconds: 300));
+    _fabAnimation = new CurvedAnimation(
+        parent: _fabAnimationController, curve: Curves.easeOut);
+  }
+
+  //체크 버튼 애니메이션 실행
+  _animateFab() {
+    _fabAnimationController.forward();
   }
 }
 
