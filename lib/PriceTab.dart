@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 
 class PriceTab extends StatefulWidget {
   final double height;
+  final VoidCallback onPlaneFlightStart;
 
-  const PriceTab({Key key, this.height}) : super(key: key);
+  const PriceTab({Key key, this.height, this.onPlaneFlightStart})
+      : super(key: key);
 
   @override
   _PriceTabState createState() => _PriceTabState();
@@ -54,7 +56,10 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
 
   //비행기 아이콘 최대 위쪽 패딩
   double get _maxPlaneTopPadding =>
-      widget.height - _initialPlanePaddingBottom - _planeSize;
+      widget.height -
+      _minPlanePaddingTop -
+      _initialPlanePaddingBottom -
+      _planeSize;
 
   //비행기 크기
   double get _planeSize => _planeSizeAnimation.value;
@@ -73,7 +78,6 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
     //foreach로 키 리스트에 키 추가
     _flightStops
         .forEach((stop) => _stopKeys.add(new GlobalKey<FlightStopCardState>()));
-    _planeSizeAnimationController.forward();
     _planeSizeAnimationController.forward();
   }
 
@@ -100,13 +104,6 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
   }
 
   //비행기 아이콘
-  Widget _buildPlaneIcon() {
-    return Icon(
-      Icons.airplanemode_active,
-      color: Colors.red,
-      size: _planeSize,
-    );
-  }
 
   //애니메이션이 추가된 비행기 아이콘
   Widget _buildPlane() {

@@ -12,6 +12,7 @@ class ContentCard extends StatefulWidget {
 
 class _ContentCardState extends State<ContentCard> {
   bool showInput = true;
+  bool showInputTabOptions = true;
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +72,11 @@ class _ContentCardState extends State<ContentCard> {
             //화면 전환
             child: showInput
                 ? _buildMulticityTab()
-                : PriceTab(height: viewportConstraints.maxHeight - 48.0),
+                : PriceTab(
+                    height: viewportConstraints.maxHeight - 48.0,
+                    onPlaneFlightStart: () =>
+                        setState(() => showInputTabOptions = false),
+                  ),
           ),
         ),
       ),
