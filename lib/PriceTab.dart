@@ -273,6 +273,7 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
       child: ScaleTransition(
         scale: _fabAnimation,
         child: FloatingActionButton(
+          backgroundColor: Colors.red,
           //버튼 클릭 시 티켓 페이지로 이동
           onPressed: () {
             Navigator.push(context,
