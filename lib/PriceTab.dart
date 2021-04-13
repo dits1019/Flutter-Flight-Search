@@ -1,6 +1,7 @@
 import 'package:flight_search_ex/AnimatedDot.dart';
 import 'package:flight_search_ex/FlightStop.dart';
 import 'package:flight_search_ex/FlightStopCard.dart';
+import 'package:flight_search_ex/TicketsPage.dart';
 import 'package:flutter/material.dart';
 
 class PriceTab extends StatefulWidget {
@@ -272,7 +273,11 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
       child: ScaleTransition(
         scale: _fabAnimation,
         child: FloatingActionButton(
-          onPressed: () {},
+          //버튼 클릭 시 티켓 페이지로 이동
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => TicketsPage()));
+          },
           child: Icon(Icons.check, size: 36.0),
         ),
       ),
