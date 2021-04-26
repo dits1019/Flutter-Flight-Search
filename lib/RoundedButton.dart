@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 class RoundedButton extends StatelessWidget {
-  final String text;
-  final bool selected;
-  final GestureTapCallback onTap;
+  final String? text;
+  final bool? selected;
+  final GestureTapCallback? onTap;
 
-  const RoundedButton({Key key, this.text, this.selected, this.onTap})
+  const RoundedButton({Key? key, this.text, this.selected, this.onTap})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     //선택했을 때와 하지 않았을 때의 backgroundColor와 textColor
-    Color backgroundColor = selected ? Colors.white : Colors.transparent;
-    Color textColor = selected ? Colors.red : Colors.white;
+    Color backgroundColor = selected! ? Colors.white : Colors.transparent;
+    Color textColor = selected! ? Colors.red : Colors.white;
 
     //공간을 모두 차지하게 함
     return Expanded(
@@ -31,7 +31,7 @@ class RoundedButton extends StatelessWidget {
                 borderRadius: new BorderRadius.circular(30.0)),
             child: new Center(
               child: new Text(
-                text,
+                text!,
                 style: new TextStyle(color: textColor),
               ),
             ),

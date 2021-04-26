@@ -12,11 +12,11 @@ class TicketsPage extends StatefulWidget {
 class _TicketsPageState extends State<TicketsPage>
     with TickerProviderStateMixin {
   //애니메이션 컨트롤러
-  AnimationController cardEntranceAnimationController;
+  late AnimationController cardEntranceAnimationController;
   //티켓 애니메이션
-  List<Animation> ticketAnimations;
+  late List<Animation> ticketAnimations;
   //지문 버튼 애니메이션
-  Animation fabAnimation;
+  late Animation fabAnimation;
 
   //티켓에 내용이 들어가 있는 리스트
   List<FlightStopTicket> stops = [
@@ -105,7 +105,7 @@ class _TicketsPageState extends State<TicketsPage>
   //지문 버튼
   _buildFab() {
     return ScaleTransition(
-      scale: fabAnimation,
+      scale: fabAnimation as Animation<double>,
       child: FloatingActionButton(
         backgroundColor: Colors.red,
         onPressed: () => Navigator.of(context).pop(),

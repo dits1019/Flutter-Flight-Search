@@ -5,10 +5,10 @@ import 'package:flight_search_ex/TicketsPage.dart';
 import 'package:flutter/material.dart';
 
 class PriceTab extends StatefulWidget {
-  final double height;
-  final VoidCallback onPlaneFlightStart;
+  final double? height;
+  final VoidCallback? onPlaneFlightStart;
 
-  const PriceTab({Key key, this.height, this.onPlaneFlightStart})
+  const PriceTab({Key? key, this.height, this.onPlaneFlightStart})
       : super(key: key);
 
   @override
@@ -18,19 +18,19 @@ class PriceTab extends StatefulWidget {
 //AnimationController를 만들 때는
 class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
   //비행기 아이콘 크기 조정 애니메이션
-  AnimationController _planeSizeAnimationController;
-  Animation _planeSizeAnimation;
+  late AnimationController _planeSizeAnimationController;
+  late Animation _planeSizeAnimation;
 
   //비행기 아이콘 이동 애니메이션
-  AnimationController _planeTravelController;
-  Animation _planeTravelAnimation;
+  late AnimationController _planeTravelController;
+  late Animation _planeTravelAnimation;
 
   //항공편 카드 애니메이션
-  AnimationController _fabAnimationController;
-  Animation _fabAnimation;
+  late AnimationController _fabAnimationController;
+  late Animation _fabAnimation;
 
   //점 애니메이션
-  AnimationController _dotsAnimationController;
+  late AnimationController _dotsAnimationController;
   //애니메이션이 담겨져있는 배열
   List<Animation<double>> _dotPositions = [];
 
@@ -57,7 +57,7 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
 
   //비행기 아이콘 최대 위쪽 패딩
   double get _maxPlaneTopPadding =>
-      widget.height -
+      widget.height! -
       _minPlanePaddingTop -
       _initialPlanePaddingBottom -
       _planeSize;
@@ -112,7 +112,7 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
       animation: _planeTravelAnimation,
       child: Column(
         children: <Widget>[
-          AnimatedPlaneIcon(animation: _planeSizeAnimation),
+          AnimatedPlaneIcon(animation: _planeSizeAnimation as Animation<double>),
           //비행기가 지나간 자리에 남는 선
           Container(
             width: 2.0,
@@ -123,7 +123,7 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
       ),
       //애니메이션 후 위치 유지
       builder: (context, child) =>
-          Positioned(top: _planeTopPadding, child: child),
+          Positioned(top: _planeTopPadding, child: child!),
     );
   }
 
@@ -190,7 +190,7 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
     //점들 간에 애니메이션 속도 간격(차례대로 올라오게 하기 위해)
     final double slideDelayInterval = 0.2;
     //시작했을 때 위쪽 마진(화면 맨아래)
-    double startingMarginTop = widget.height;
+    double? startingMarginTop = widget.height;
     //최소 위쪽 마진
     double minMarginTop =
         _minPlanePaddingTop + _planeSize + 0.5 * (0.8 * _cardHeight);
@@ -271,7 +271,7 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
     return Positioned(
       bottom: 16.0,
       child: ScaleTransition(
-        scale: _fabAnimation,
+        scale: _fabAnimation as Animation<double>,
         child: FloatingActionButton(
           backgroundColor: Colors.red,
           //버튼 클릭 시 티켓 페이지로 이동
@@ -291,7 +291,7 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
     return Future.forEach(_stopKeys, (GlobalKey<FlightStopCardState> stopKey) {
       //시간 간격을 두고 애니메이션 실행
       return new Future.delayed(Duration(milliseconds: 250), () {
-        stopKey.currentState.runAnimation();
+        stopKey.currentState!.runAnimation();
       });
     });
   }
@@ -313,12 +313,12 @@ class _PriceTabState extends State<PriceTab> with TickerProviderStateMixin {
 //애니메이션이 추가된 비행기 아이콘(크기 애니메이션)
 class AnimatedPlaneIcon extends AnimatedWidget {
   //animation을 받아오기
-  AnimatedPlaneIcon({Key key, Animation<double> animation})
+  AnimatedPlaneIcon({Key? key, required Animation<double> animation})
       : super(key: key, listenable: animation);
 
   @override
   Widget build(BuildContext context) {
-    Animation<double> animation = super.listenable;
+    Animation<double> animation = super.listenable as Animation<double>;
     return Icon(
       Icons.airplanemode_active,
       color: Colors.red,

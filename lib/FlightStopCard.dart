@@ -10,7 +10,7 @@ class FlightStopCard extends StatefulWidget {
   static const double width = 140.0;
 
   const FlightStopCard(
-      {Key key, @required this.flightStop, @required this.isLeft})
+      {Key? key, required this.flightStop, required this.isLeft})
       : super(key: key);
 
   @override
@@ -19,17 +19,17 @@ class FlightStopCard extends StatefulWidget {
 
 class FlightStopCardState extends State<FlightStopCard>
     with TickerProviderStateMixin {
-  AnimationController _animationController;
+  late AnimationController _animationController;
   //카드 크기 애니메이션
-  Animation<double> _cardSizeAnimation;
+  late Animation<double> _cardSizeAnimation;
   //텍스트 위치 애니메이션
-  Animation<double> _durationPositionAnimation;
-  Animation<double> _airportsPositionAnimation;
-  Animation<double> _datePositionAnimation;
-  Animation<double> _pricePositionAnimation;
-  Animation<double> _fromToPositionAnimation;
+  late Animation<double> _durationPositionAnimation;
+  late Animation<double> _airportsPositionAnimation;
+  late Animation<double> _datePositionAnimation;
+  late Animation<double> _pricePositionAnimation;
+  late Animation<double> _fromToPositionAnimation;
   //연결선 애니메이션
-  Animation<double> _lineAnimation;
+  late Animation<double> _lineAnimation;
 
   @override
   void initState() {
@@ -95,9 +95,9 @@ class FlightStopCardState extends State<FlightStopCard>
 
   //최대 가로 길이
   double get maxWidth {
-    RenderBox renderBox = context.findRenderObject();
+    RenderBox? renderBox = context.findRenderObject() as RenderBox?;
     //제약 조건 생성(renderBox.constraints = 가장)
-    BoxConstraints constraints = renderBox?.constraints;
+    BoxConstraints? constraints = renderBox?.constraints;
     double maxWidth = constraints?.maxWidth ?? 0.0;
     return maxWidth;
   }

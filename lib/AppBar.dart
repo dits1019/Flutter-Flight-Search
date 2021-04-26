@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 //App Bar Widget
 class AirAsiaBar extends StatelessWidget {
   //앱바의 높이는 매게 변수로(앱바의 높이가 변하기 때문에)
-  final double height;
+  final double? height;
 
-  const AirAsiaBar({Key key, this.height}) : super(key: key);
+  const AirAsiaBar({Key? key, this.height}) : super(key: key);
 
   //모든 뷰가 앱바 위에 그려지므로 Stack을 사용
   @override

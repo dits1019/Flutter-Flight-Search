@@ -5,12 +5,12 @@ class AnimatedDot extends AnimatedWidget {
   final Color color;
   static final double size = 24.0;
 
-  AnimatedDot({Key key, Animation<double> animation, @required this.color})
+  AnimatedDot({Key? key, required Animation<double> animation, required this.color})
       : super(key: key, listenable: animation);
 
   @override
   Widget build(BuildContext context) {
-    Animation<double> animation = super.listenable;
+    Animation<double> animation = super.listenable as Animation<double>;
     return Positioned(
         top: animation.value,
         child: Container(
